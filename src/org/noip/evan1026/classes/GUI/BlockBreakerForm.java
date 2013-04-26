@@ -43,7 +43,7 @@ public class BlockBreakerForm extends JFrame implements WindowListener, MouseLis
 		game.start();
 	}
 
-	public void markToRemove(Block[][] blocks, int x, int y, ArrayList<Block> removeList){
+	private void markToRemove(Block[][] blocks, int x, int y, ArrayList<Block> removeList){
 		removeList.add(blocks[x][y]);
 
 		if(x + 1 < GlobalVars.NUM_COLUMNS && blocks[x + 1][y].getColor().equals(blocks[x][y].getColor()) && !removeList.contains(blocks[x + 1][y])){
@@ -63,13 +63,13 @@ public class BlockBreakerForm extends JFrame implements WindowListener, MouseLis
 		}
 	}
 	
-	public void removeBlocks(ArrayList<Block> blocks){
+	private void removeBlocks(ArrayList<Block> blocks){
 		for (Block b : blocks){
 			b.setOccupied(false);
 		}
 	}
 	
-	public void makeBlocksFall(Block[][] blocks){
+	private void makeBlocksFall(Block[][] blocks){
 		for (int i = GlobalVars.NUM_ROWS - 1; i >= 0; i--){
 			for (int j = 0; j < GlobalVars.NUM_COLUMNS; j++){
 				if (blocks[j][i].getOccupied()){
@@ -83,6 +83,80 @@ public class BlockBreakerForm extends JFrame implements WindowListener, MouseLis
 				}
 			}
 		}
+	}
+	
+	private void collapseToCenter(Block[][] blocks){
+
+		while (findEmptyColumn(blocks) != -1){
+			int i = findEmptyColumn(blocks);
+
+			if (i < GlobalVars.NUM_COLUMNS / 2){
+				for (int j = i; j >= 0; j--){
+					for (int k = 0; k < GlobalVars.NUM_ROWS; k++){
+						if (j - 1 >= 0){
+							blocks[j][k] = blocks[j - 1][k];
+						}
+						else{
+							blocks[j][k] = new Block(Color.BLACK, false);
+						}
+					}
+				}
+			}
+			else{
+				for (int j = i; j < GlobalVars.NUM_COLUMNS; j++){
+					for (int k = 0; k < GlobalVars.NUM_ROWS; k++){
+						if (j + 1 < GlobalVars.NUM_COLUMNS) {
+							blocks[j][k] = blocks[j + 1][k];
+						}
+						else {
+							blocks[j][k] = new Block(Color.BLACK, false);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	
+	private boolean emptyColumn(int index, Block[][] blocks){
+		for (int j = 0; j < GlobalVars.NUM_ROWS; j++){
+			if (blocks[index][j].getOccupied()){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	private int findEmptyColumn(Block[][] blocks){
+		
+		for (int i = 0; i < GlobalVars.NUM_COLUMNS; i++){
+			if (emptyColumn(i, blocks) && columnHasOccupiedNeighbors(i, blocks)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	private boolean columnHasOccupiedNeighbors(int index, Block[][] blocks){
+		
+		boolean leftSide  = false, 
+				rightSide = false;
+		for (int i = 0; i < index; i++){
+			if (!emptyColumn(i, blocks)){
+				leftSide = true;
+				break;
+			}
+		}
+		for (int i = index + 1; i < GlobalVars.NUM_COLUMNS; i++){
+			if (!emptyColumn(i, blocks)){
+				rightSide = true;
+				break;
+			}
+		}
+		
+		return (rightSide && leftSide);
 	}
 
 	@Override
@@ -105,6 +179,7 @@ public class BlockBreakerForm extends JFrame implements WindowListener, MouseLis
 			if (blocksToRemove.size() > 2){
 				removeBlocks(blocksToRemove);
 				makeBlocksFall(game.getBlocks());
+				collapseToCenter(game.getBlocks());
 			}
 
 		}
