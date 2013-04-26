@@ -6,8 +6,10 @@ public class BlockBreaker {
 	
 	public static void main(String args[]){
 		
-		BlockBreakerForm form  = new BlockBreakerForm(900, 600);
+		BlockBreakerForm form  = new BlockBreakerForm();
+		
 		form.setVisible(true);
+		
 		
 		form.start();
 	}

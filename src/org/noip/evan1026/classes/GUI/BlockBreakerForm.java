@@ -1,29 +1,38 @@
 package org.noip.evan1026.classes.GUI;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
 
+import org.noip.evan1026.GlobalVars;
 import org.noip.evan1026.classes.Block;
 
 public class BlockBreakerForm extends JFrame implements WindowListener, MouseListener {
 
 	GamePanel game = new GamePanel();
 
-	public BlockBreakerForm(int width, int height){
+	public BlockBreakerForm(){
 		addWindowListener(this);
 		game.addMouseListener(this);
-		setSize(width, height);
 		setResizable(false);
-		setLayout(null);
 
-		add(game);
-		int gameX = getWidth() - 50,
-				gameY = getHeight() - 50;
-		game.setSize(gameX - (gameX % 9), gameY - (gameY % 9));
-		game.setLocation(0, 0);
+		int width = GlobalVars.BLOCK_WIDTH * GlobalVars.NUM_COLUMNS;
+		int height = GlobalVars.BLOCK_HEIGHT * GlobalVars.NUM_ROWS;
+		
+		Dimension dimension = new Dimension(width, height);
+		
+		game.setPreferredSize(dimension);
+		game.setMinimumSize(dimension);
+		game.setMaximumSize(dimension);
+		
+		
+		add(game, BorderLayout.CENTER);
+		pack();
+		
 	}
 
 	public void start(){
@@ -31,20 +40,21 @@ public class BlockBreakerForm extends JFrame implements WindowListener, MouseLis
 	}
 
 	public void removeAdjacent(Block[][] blocks, int x, int y){
-		if(x + 1 < 9 && blocks[x + 1][y].getState()){
-			blocks[x + 1][y].setState(false);
+		blocks[x][y].setState(false);
+
+		if(x + 1 < GlobalVars.NUM_COLUMNS && blocks[x + 1][y].getState()){
 			removeAdjacent(blocks, x + 1, y);
 		}
-		if(x - 1 > 0 && blocks[x - 1][y].getState()){
-			blocks[x - 1][y].setState(false);
+		
+		if(x - 1 >= 0 && blocks[x - 1][y].getState()){
 			removeAdjacent(blocks, x - 1, y);
 		}
-		if(y + 1 < 9 && blocks[x][y + 1].getState()){
-			blocks[x][y + 1].setState(false);
+		
+		if(y + 1 < GlobalVars.NUM_ROWS && blocks[x][y + 1].getState()){
 			removeAdjacent(blocks, x, y + 1);
 		}
-		if(y - 1 > 0 && blocks[x][y - 1].getState()){
-			blocks[x][y - 1].setState(false);
+		
+		if(y - 1 >= 0 && blocks[x][y - 1].getState()){
 			removeAdjacent(blocks, x, y - 1);
 		}
 	}
@@ -58,13 +68,10 @@ public class BlockBreakerForm extends JFrame implements WindowListener, MouseLis
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		if (arg0.getComponent().equals(game)){
-			int x = arg0.getX() / (getWidth() / 9);
-			int y = arg0.getY() / (getHeight() / 9);
-			
-			System.out.println(x + " " + y);
+			int x = arg0.getX() / game.blockWidth;
+			int y = arg0.getY() / game.blockHeight;
 
 			if (game.getBlocks()[x][y].getState()){
-				game.getBlocks()[x][y].setState(false);
 				removeAdjacent(game.getBlocks(), x, y);
 			}
 
