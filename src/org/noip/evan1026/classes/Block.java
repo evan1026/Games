@@ -1,21 +1,38 @@
 package org.noip.evan1026.classes;
 
-import java.util.Random;
+import java.awt.Color;
 
 public class Block {
 	
-	private boolean _state;
+	private ColorState _state;
 	
-	public Block(){
-		Random rand = new Random();
-		_state = rand.nextBoolean();
+	public Block(Color color, boolean occupied){
+		_state = new ColorState(color, occupied);
 	}
 	
-	public boolean getState(){
+	public ColorState getState(){
 		return _state;
 	}
 	
-	public void setState(boolean state){
+	public Color getColor(){
+		return _state.getColor();
+	}
+	
+	public boolean getOccupied(){
+		return _state.getOccupied();
+	}
+	
+	public void setState(ColorState state){
 		_state = state;
 	}
+	
+	public void setColor(Color color){
+		_state.setColor(color);
+	}
+	
+	public void setOccupied(boolean occupied){
+		_state.setOccupied(occupied);
+	}
+	
+	
 }

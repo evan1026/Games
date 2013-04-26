@@ -1,11 +1,15 @@
 package org.noip.evan1026.classes.GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.List;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
+
 import javax.swing.JFrame;
 
 import org.noip.evan1026.GlobalVars;
@@ -39,23 +43,45 @@ public class BlockBreakerForm extends JFrame implements WindowListener, MouseLis
 		game.start();
 	}
 
-	public void removeAdjacent(Block[][] blocks, int x, int y){
-		blocks[x][y].setState(false);
+	public void markToRemove(Block[][] blocks, int x, int y, ArrayList<Block> removeList){
+		removeList.add(blocks[x][y]);
 
-		if(x + 1 < GlobalVars.NUM_COLUMNS && blocks[x + 1][y].getState()){
-			removeAdjacent(blocks, x + 1, y);
+		if(x + 1 < GlobalVars.NUM_COLUMNS && blocks[x + 1][y].getColor().equals(blocks[x][y].getColor()) && !removeList.contains(blocks[x + 1][y])){
+			markToRemove(blocks, x + 1, y, removeList);
 		}
 		
-		if(x - 1 >= 0 && blocks[x - 1][y].getState()){
-			removeAdjacent(blocks, x - 1, y);
+		if(x - 1 >= 0 && blocks[x - 1][y].getColor().equals(blocks[x][y].getColor()) && !removeList.contains(blocks[x - 1][y])){
+			markToRemove(blocks, x - 1, y, removeList);
 		}
 		
-		if(y + 1 < GlobalVars.NUM_ROWS && blocks[x][y + 1].getState()){
-			removeAdjacent(blocks, x, y + 1);
+		if(y + 1 < GlobalVars.NUM_ROWS && blocks[x][y + 1].getColor().equals(blocks[x][y].getColor()) && !removeList.contains(blocks[x][y + 1])){
+			markToRemove(blocks, x, y + 1, removeList);
 		}
 		
-		if(y - 1 >= 0 && blocks[x][y - 1].getState()){
-			removeAdjacent(blocks, x, y - 1);
+		if(y - 1 >= 0 && blocks[x][y - 1].getColor().equals(blocks[x][y].getColor()) && !removeList.contains(blocks[x][y - 1])){
+			markToRemove(blocks, x, y - 1, removeList);
+		}
+	}
+	
+	public void removeBlocks(ArrayList<Block> blocks){
+		for (Block b : blocks){
+			b.setOccupied(false);
+		}
+	}
+	
+	public void makeBlocksFall(Block[][] blocks){
+		for (int i = GlobalVars.NUM_ROWS - 1; i >= 0; i--){
+			for (int j = 0; j < GlobalVars.NUM_COLUMNS; j++){
+				if (blocks[j][i].getOccupied()){
+					for (int k = GlobalVars.NUM_ROWS - 1; k > i; k--){
+						if (!blocks[j][k].getOccupied()){
+							blocks[j][k] = blocks[j][i];
+							blocks[j][i] = new Block(Color.BLACK, false);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -71,8 +97,14 @@ public class BlockBreakerForm extends JFrame implements WindowListener, MouseLis
 			int x = arg0.getX() / game.blockWidth;
 			int y = arg0.getY() / game.blockHeight;
 
-			if (game.getBlocks()[x][y].getState()){
-				removeAdjacent(game.getBlocks(), x, y);
+			ArrayList<Block> blocksToRemove = new ArrayList<Block>();
+			if (game.getBlocks()[x][y].getOccupied()){
+				markToRemove(game.getBlocks(), x, y, blocksToRemove);
+			}
+			
+			if (blocksToRemove.size() > 2){
+				removeBlocks(blocksToRemove);
+				makeBlocksFall(game.getBlocks());
 			}
 
 		}

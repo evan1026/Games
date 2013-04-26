@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -21,17 +22,42 @@ public class GamePanel extends JPanel {
 	public int blockWidth;
 	public int blockHeight;
 	
-	Timer t = new Timer(1000/frameRate, new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			drawRecs();
-		}
-	});
+	ActionListener timerListener = new ActionListener() {
+										@Override
+										public void actionPerformed(ActionEvent arg0) {
+											drawRecs();
+										}
+								   };
+								   
+	Timer t = new Timer(1000/frameRate, timerListener);
 
 	public GamePanel(){
 		for (int i = 0; i < GlobalVars.NUM_COLUMNS; i++){
 			for (int j = 0; j < GlobalVars.NUM_ROWS; j++){
-				blocks[i][j] = new Block();
+				if (j < GlobalVars.NUM_ROWS - GlobalVars.ROWS_OF_BLOCKS){
+					blocks[i][j] = new Block(Color.BLACK,  false);
+				}
+				else{
+					Random rand = new Random();
+					Color newColor = null;
+					
+					switch(rand.nextInt(4)){
+					case 0:
+						newColor = Color.RED;
+						break;
+					case 1:
+						newColor = Color.GREEN;
+						break;
+					case 2:
+						newColor = Color.BLUE;
+						break;
+					case 3:
+						newColor = Color.ORANGE;
+						break;
+					}
+					
+					blocks[i][j] = new Block(newColor, true);
+				}
 			}
 		}
 	}
@@ -55,13 +81,10 @@ public class GamePanel extends JPanel {
 
 		for (int i = 0; i < GlobalVars.NUM_COLUMNS; i++){
 			for (int j = 0; j < GlobalVars.NUM_ROWS; j++){
-				if (blocks[i][j].getState()){
-					g.setColor(Color.RED);
+				if (blocks[i][j].getOccupied()){
+					g.setColor(blocks[i][j].getColor());
+					g.fill3DRect((int)Math.round(i * blockWidth), (int)Math.round(j * blockHeight), (int)Math.round(blockWidth), (int)Math.round(blockHeight), true);
 				}
-				else{
-					g.setColor(Color.GREEN);
-				}
-				g.fill3DRect((int)Math.round(i * blockWidth), (int)Math.round(j * blockHeight), (int)Math.round(blockWidth), (int)Math.round(blockHeight), true);
 				
 			}
 			
