@@ -10,7 +10,6 @@ public class BlockBreaker {
 		
 		form.setVisible(true);
 		
-		
 		form.start();
 	}
 }
