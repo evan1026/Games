@@ -6,7 +6,7 @@ public class BlockBreaker {
 	
 	public static void main(String args[]){
 		
-		BlockBreakerForm form  = new BlockBreakerForm();
+		GameForm form  = new GameForm();
 		
 		form.setVisible(true);
 		

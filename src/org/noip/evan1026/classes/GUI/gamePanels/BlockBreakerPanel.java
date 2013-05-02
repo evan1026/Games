@@ -1,6 +1,8 @@
-package org.noip.evan1026.classes.GUI;
+package org.noip.evan1026.classes.GUI.gamePanels;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import org.noip.evan1026.classes.Block;
+import org.noip.evan1026.classes.GUI.ScorePane;
 
-public class BlockBreakerPanel extends JPanel implements MouseListener {
+public class BlockBreakerPanel extends GamePanel implements MouseListener {
 	
 	public static final int NUM_ROWS       = 30;
 	public static final int NUM_COLUMNS    = 45;
@@ -26,7 +29,9 @@ public class BlockBreakerPanel extends JPanel implements MouseListener {
 	
 	private static final long serialVersionUID = 9202791160605884542L;
 
-	private Block[][] _blocks = new Block[NUM_COLUMNS][NUM_ROWS];
+	private Block[][] _blocks      = new Block[NUM_COLUMNS][NUM_ROWS];
+	private ScorePane _score       = new ScorePane();
+	private JPanel    _drawingPane = new JPanel();
 	
 	ActionListener timerListener = new ActionListener() {
 										@Override
@@ -39,7 +44,10 @@ public class BlockBreakerPanel extends JPanel implements MouseListener {
 
 	public BlockBreakerPanel(){
 		
-		addMouseListener(this);
+		_drawingPane.addMouseListener(this);
+		add(_score, BorderLayout.NORTH);
+		add(_drawingPane, BorderLayout.SOUTH);
+		_score.setScore(0);
 		
 		for (int i = 0; i < NUM_COLUMNS; i++){
 			for (int j = 0; j < NUM_ROWS; j++){
@@ -70,10 +78,31 @@ public class BlockBreakerPanel extends JPanel implements MouseListener {
 				}
 			}
 		}
+		
+		int width  = BlockBreakerPanel.BLOCK_WIDTH  * BlockBreakerPanel.NUM_COLUMNS;
+		int height = BlockBreakerPanel.BLOCK_HEIGHT * BlockBreakerPanel.NUM_ROWS;
+		
+		Dimension dimension = new Dimension(width, height);
+		
+		_drawingPane.setPreferredSize(dimension);
+		_drawingPane.setMinimumSize(dimension);
+		_drawingPane.setMaximumSize(dimension);
+		
+		dimension.setSize(width, height + 34);
+		
+		setPreferredSize(dimension);
+		setMinimumSize(dimension);
+		setMaximumSize(dimension);
+		
+		
 	}
 
 	public void start(){
 		t.start();
+	}
+	
+	public void stop(){
+		t.stop();
 	}
 	
 	private void drawRecs(){
@@ -95,13 +124,14 @@ public class BlockBreakerPanel extends JPanel implements MouseListener {
 			}
 		}
 
-		g = this.getGraphics();
+		g = _drawingPane.getGraphics();
 		g.drawImage(image, 0, 0, null);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		if (arg0.getComponent().equals(this)){
+		
+		if (arg0.getComponent().equals(_drawingPane)){
 			int x = arg0.getX() / BLOCK_WIDTH;
 			int y = arg0.getY() / BLOCK_HEIGHT;
 
@@ -141,10 +171,14 @@ public class BlockBreakerPanel extends JPanel implements MouseListener {
 	}
 	
 	private void removeBlocks(ArrayList<Block> blocks){
+		int newPoints = 0;
 		for (Block b : blocks){
 			b.setOccupied(false);
 			b.setColor(Color.BLACK);
+			newPoints++;
 		}
+		
+		_score.setScore(_score.getScore() + newPoints);
 	}
 	
 	private void makeBlocksFall(){
