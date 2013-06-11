@@ -1,16 +1,17 @@
-package org.noip.evan1026.classes.GUI;
+package org.noip.evan1026;
 
 import java.awt.BorderLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
-import org.noip.evan1026.classes.GUI.gamePanels.*;
+
+import org.noip.evan1026.BlockBreaker.BlockBreakerPanel;
 
 public class GameForm extends JFrame implements WindowListener {
 
 	private static final long serialVersionUID = 962271559678577481L;
 
-	GamePanel game;
+	private GamePanel mainPanel;
 
 	public GameForm(){
 		this("BlockBreaker");
@@ -22,21 +23,21 @@ public class GameForm extends JFrame implements WindowListener {
 		setVisible(true);
 
 		if (gameName.equals("BlockBreaker")){
-			game = new BlockBreakerPanel();
+			mainPanel = new BlockBreakerPanel();
 		}
 		
-		add(game, BorderLayout.SOUTH);
+		add(mainPanel, BorderLayout.CENTER);
 		pack();
 	}
 
 	public void start(){
-		game.start();
+		mainPanel.start();
 	}
 
 	
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		game.stop();
+		mainPanel.stop();
 		this.dispose();
 	}
 	

@@ -1,4 +1,4 @@
-package org.noip.evan1026.classes.GUI.gamePanels;
+package org.noip.evan1026;
 
 import javax.swing.JPanel;
 
