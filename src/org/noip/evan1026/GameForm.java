@@ -1,33 +1,47 @@
 package org.noip.evan1026;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
 
 import org.noip.evan1026.BlockBreaker.BlockBreakerPanel;
+import org.noip.evan1026.Breakout.BreakoutPanel;
 
 public class GameForm extends JFrame implements WindowListener {
 
 	private static final long serialVersionUID = 962271559678577481L;
+	
+	public static final int GAME_BLOCK_BREAKER = 0;
+	public static final int GAME_BREAKOUT      = 1;
 
 	private GamePanel mainPanel;
 
 	public GameForm(){
-		this("BlockBreaker");
+		this(GAME_BLOCK_BREAKER);
 	}
 	
-	public GameForm(String gameName){
+	public GameForm(int game){
 		addWindowListener(this);
 		setResizable(false);
 		setVisible(true);
 
-		if (gameName.equals("BlockBreaker")){
+		if (game == GAME_BLOCK_BREAKER){
 			mainPanel = new BlockBreakerPanel();
+		}
+		else if (game == GAME_BREAKOUT){
+		    mainPanel = new BreakoutPanel();
 		}
 		
 		add(mainPanel, BorderLayout.CENTER);
+		
 		pack();
+		
+		if (mainPanel instanceof KeyListener){
+		    System.out.println("added listener");
+		    addKeyListener((KeyListener) mainPanel);
+		}
 	}
 
 	public void start(){
