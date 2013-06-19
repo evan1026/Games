@@ -1,32 +1,22 @@
 package org.noip.evan1026.Breakout;
 
-import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
-import javax.swing.Timer;
-
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.Rectangle;
+//import org.lwjgl.util.Rectangle;
 import org.noip.evan1026.GamePanel;
-
-import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 
 public class BreakoutPanel extends GamePanel implements KeyListener{
     
-    private Paddle _paddle = new Paddle();
-    private boolean _left;
-//    private Canvas _canvas = new Canvas();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7853923951523972981L;
+	private Paddle _paddle = new Paddle();
+    
 
 //    private ActionListener _timerHandler = new ActionListener(){
 //                                                @Override
@@ -88,7 +78,8 @@ public class BreakoutPanel extends GamePanel implements KeyListener{
         //_timer.stop();
     }
     
-    private void render(){
+    @SuppressWarnings("unused")
+	private void render(){
         
         if(getGraphics() == null || getWidth() == 0 || getHeight() == 0){
             return;
@@ -97,9 +88,7 @@ public class BreakoutPanel extends GamePanel implements KeyListener{
         BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics g = image.getGraphics();
         
-        Rectangle rec = _paddle.getRectangle();
-        
-        g.draw3DRect(_paddle.getRectangle(), y, width, height, raised)
+        _paddle.getRectangle();
 
         g = getGraphics();
         g.drawImage(image, 0, 0, null);
@@ -132,14 +121,12 @@ public class BreakoutPanel extends GamePanel implements KeyListener{
     @Override
     public void keyPressed(KeyEvent arg0) {
         if (arg0.getKeyChar() == KeyEvent.VK_LEFT){
-            _left = true;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent arg0) {
         if (arg0.getKeyChar() == KeyEvent.VK_LEFT){
-            _left = false;
         }
     }
 
