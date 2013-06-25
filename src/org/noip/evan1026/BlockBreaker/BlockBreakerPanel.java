@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -13,12 +11,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
-import javax.swing.Timer;
-
 import org.noip.evan1026.GamePanel;
 
 
 public class BlockBreakerPanel extends GamePanel implements MouseListener {
+
+	private static final long serialVersionUID = -3615059083996358259L;
 	
 	public static final int NUM_ROWS       = 30;
 	public static final int NUM_COLUMNS    = 45;
@@ -26,21 +24,10 @@ public class BlockBreakerPanel extends GamePanel implements MouseListener {
 	public static final int BLOCK_HEIGHT   = 20;
 	public static final int ROWS_OF_BLOCKS = 30;
 	public static final int FPS            = 30;
-	
-	private static final long serialVersionUID = 9202791160605884542L;
 
 	private Block[][] _blocks      = new Block[NUM_COLUMNS][NUM_ROWS];
 	private ScorePane _score       = new ScorePane();
 	private JPanel    _drawingPane = new JPanel();
-	
-	ActionListener timerListener = new ActionListener() {
-										@Override
-										public void actionPerformed(ActionEvent arg0) {
-											drawRecs();
-										}
-								   };
-								   
-	Timer t = new Timer(1000 / FPS, timerListener);
 
 	public BlockBreakerPanel(){
 		
@@ -98,14 +85,14 @@ public class BlockBreakerPanel extends GamePanel implements MouseListener {
 	}
 
 	public void start(){
-		t.start();
+		startTimer();
 	}
 	
 	public void stop(){
-		t.stop();
+		stopTimer();
 	}
 	
-	private void drawRecs(){
+	public void update(){
 
 		if(getGraphics() == null || getWidth() == 0 || getHeight() == 0){
 			return;
@@ -230,6 +217,7 @@ public class BlockBreakerPanel extends GamePanel implements MouseListener {
 	}
 
 	private boolean emptyColumn(int index){
+		
 		for (int j = 0; j < NUM_ROWS; j++){
 			if (_blocks[index][j].getOccupied()){
 				return false;
@@ -271,26 +259,19 @@ public class BlockBreakerPanel extends GamePanel implements MouseListener {
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseEntered(MouseEvent arg0) {}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseExited(MouseEvent arg0) {}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mousePressed(MouseEvent arg0) {}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mouseReleased(MouseEvent arg0) {}
+
+	@Override
+	public int getFPS() {
+		return FPS;
 	}
 }

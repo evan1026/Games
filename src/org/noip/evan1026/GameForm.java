@@ -39,7 +39,6 @@ public class GameForm extends JFrame implements WindowListener {
 		pack();
 		
 		if (mainPanel instanceof KeyListener){
-		    System.out.println("added listener");
 		    addKeyListener((KeyListener) mainPanel);
 		}
 	}
