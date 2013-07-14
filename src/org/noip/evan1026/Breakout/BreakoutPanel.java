@@ -1,20 +1,25 @@
 package org.noip.evan1026.Breakout;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import org.noip.evan1026.GamePanel;
 
 public class BreakoutPanel extends GamePanel implements KeyListener{
     
+	private static final long serialVersionUID = 573060352596076724L;
+
 	public static final int FPS = 30;
 	
 	private Paddle _paddle;
 	private Ball   _ball;
+	
+	private ArrayList<Block> _blocks = new ArrayList<Block>();
     
 	private boolean _leftDown  = false;
 	private boolean _rightDown = false;
@@ -22,7 +27,17 @@ public class BreakoutPanel extends GamePanel implements KeyListener{
     public BreakoutPanel(){
         setPreferredSize(new Dimension(700, 500));
         _paddle = new Paddle(getPreferredSize().getWidth());
-        _ball = new Ball(10, 10, 5, 5, getPreferredSize());
+        _ball = new Ball(_paddle.getRectangle().getX() + _paddle.getRectangle().getWidth() / 2, 
+        				 _paddle.getRectangle().getY() - Ball.RADIUS, 
+        				 0, 
+        				 0, 
+        				 getPreferredSize());
+        
+        for (int i = 0; i < getPreferredSize().getWidth(); i += Block.WIDTH){
+        	for (int j = 0; j < getPreferredSize().getHeight() - 300; j += Block.HEIGHT){
+        		_blocks.add(new Block(new Point(i, j), this));
+        	}
+        }
     }
     
     @Override
@@ -46,6 +61,10 @@ public class BreakoutPanel extends GamePanel implements KeyListener{
         
         _paddle.render(g);
         _ball.render(g);
+        
+        for (Block b : _blocks){
+        	b.render(g);
+        }
 
         g = getGraphics();
         g.drawImage(image, 0, 0, null);
@@ -55,7 +74,7 @@ public class BreakoutPanel extends GamePanel implements KeyListener{
 	@Override
 	public void update() {
 		_paddle.update(_leftDown, _rightDown);
-		_ball.update(_paddle.getRectangle());
+		_ball.update(_paddle.getRectangle(), _blocks);
 		render();
 	}
 
@@ -87,6 +106,10 @@ public class BreakoutPanel extends GamePanel implements KeyListener{
     @Override
     public void keyTyped(KeyEvent arg0) {
         
+    }
+    
+    public void pleaseRemove(Block block){
+    	_blocks.remove(block);
     }
 
 }

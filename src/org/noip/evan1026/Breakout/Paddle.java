@@ -15,7 +15,7 @@ public class Paddle {
     private double _gameWidth;
     
     public Paddle(double gameWidth){
-        _rec.setBounds(100, 450, 100, 10);
+        _rec.setBounds(100, 475, 100, 10);
         _gameWidth = gameWidth;
     }
     
